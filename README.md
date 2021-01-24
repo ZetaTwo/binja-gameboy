@@ -31,7 +31,7 @@ This plugin has only been tested on the following version of Binary Ninja:
 
 ## References
 
-* [Gameboy Project]()
+* [Gameboy Project](https://github.com/ZetaTwo/gameboy-project)
 * [Gameboy Pan Docs](http://bgb.bircd.org/pandocs.htm)
 * [Gameboy opcodes](https://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html)  
 
