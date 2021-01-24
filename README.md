@@ -18,10 +18,7 @@ Based on [bnGB](https://github.com/icecr4ck/bnGB) by [Hugo Porcher (icecr4ck)](h
 
 ## Installation
 
-Run the following command in your Binary Ninja plugins directory:
-```bash
-git clone https://github.com/ZetaTwo/binja-gameboy.git
-```
+Either install the plugin from the plugin manager or manually clone the repository to your plugin directory.
 
 ## Minimum version
 
@@ -34,7 +31,6 @@ This plugin has only been tested on the following version of Binary Ninja:
 * [Gameboy Project](https://github.com/ZetaTwo/gameboy-project)
 * [Gameboy Pan Docs](http://bgb.bircd.org/pandocs.htm)
 * [Gameboy opcodes](https://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html)  
-
 
 ## License
 

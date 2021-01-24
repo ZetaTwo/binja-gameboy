@@ -1,15 +1,13 @@
 import json
 import os
-import struct
 import re
+import struct
 
-from binaryninja.log import log_info
 from binaryninja.architecture import Architecture
-from binaryninja.function import RegisterInfo, InstructionInfo, InstructionTextToken
 from binaryninja.enums import InstructionTextTokenType, FlagRole, BranchType
+from binaryninja.function import RegisterInfo, InstructionInfo, InstructionTextToken
+from binaryninja.log import log_info
 from binaryninja.lowlevelil import LowLevelILFunction
-
-log_info("Hello, gameboy")
 
 
 class LR35902(Architecture):
