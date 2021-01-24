@@ -1,6 +1,6 @@
 {
 	"pluginmetadataversion" : 2,
-	"name": "Game Boy Loader and Architecture Plugin",
+	"name": "Improved Gameboy Architecture",
 	"type": ["architecture", "binaryview"],
 	"api": ["python3"],
 	"description": "A loader and diassembler for Game Boy ROMs.",
@@ -15,7 +15,7 @@
 		"Linux" : "",
 		"Windows" : ""
 	},
-	"version": "0.1",
+	"version": "1.0",
 	"author": "Carl Svensson (@zetatwo)",
-	"minimumbinaryninjaversion": 1200
+	"minimumbinaryninjaversion": 2487
 }
