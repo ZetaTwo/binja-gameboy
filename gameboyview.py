@@ -10,9 +10,10 @@ from binaryninja.enums import SegmentFlag, SectionSemantics, SymbolType
 from binaryninja.log import log_error, log_info
 from binaryninja.types import Symbol
 
+
 class GameboyRomView(BinaryView):
     name = 'Gameboy'
-    long_name = 'Bameboy ROM'
+    long_name = 'Gameboy ROM'
 
     ROM_SIG_OFFSET = 0x104
     ROM_SIG_LEN = 0x30
@@ -36,7 +37,7 @@ class GameboyRomView(BinaryView):
         ('VOID', 0xFEA0, 0x60),
         ('IO',   0xFF00, 0x80),
         ('HRAM', 0xFF80, 0x80),
-    ]    
+    ]
 
     INTERRUPT_HANDLERS = [
         ('isr_usr0', 0x00),
@@ -54,8 +55,41 @@ class GameboyRomView(BinaryView):
         ('isr_joypad', 0x60),
     ]
 
+    # TODO: fill out attributes of bankers
+    CARTRIDGE_TYPES = {
+        0x00: ("ROM ONLY", ),
+        0x01: ("MBC1", ),
+        0x02: ("MBC1+RAM", ),
+        0x03: ("MBC1+RAM+BATTERY", ),
+        0x05: ("MBC2", ),
+        0x06: ("MBC2+BATTERY", ),
+        0x08: ("ROM+RAM", ),
+        0x09: ("ROM+RAM+BATTERY", ),
+        0x0B: ("MMM01", ),
+        0x0C: ("MMM01+RAM", ),
+        0x0D: ("MMM01+RAM+BATTERY", ),
+        0x0F: ("MBC3+TIMER+BATTERY", ),
+        0x10: ("MBC3+TIMER+RAM+BATTERY", ),
+        0x11: ("MBC3", ),
+        0x12: ("MBC3+RAM", ),
+        0x13: ("MBC3+RAM+BATTERY", ),
+        0x15: ("MBC4", ),
+        0x16: ("MBC4+RAM", ),
+        0x17: ("MBC4+RAM+BATTERY", ),
+        0x19: ("MBC5", ),
+        0x1A: ("MBC5+RAM", ),
+        0x1B: ("MBC5+RAM+BATTERY", ),
+        0x1C: ("MBC5+RUMBLE", ),
+        0x1D: ("MBC5+RUMBLE+RAM", ),
+        0x1E: ("MBC5+RUMBLE+RAM+BATTERY", ),
+        0xFC: ("POCKET CAMERA", ),
+        0xFD: ("BANDAI TAMA5", ),
+        0xFE: ("HuC3", ),
+        0xFF: ("HuC1+RAM+BATTERY", ),
+    }
+
     def __init__(self, data):
-        BinaryView.__init__(self, parent_view = data, file_metadata = data.file)
+        BinaryView.__init__(self, parent_view=data, file_metadata=data.file)
         self.platform = Architecture[LR35902.name].standalone_platform
         self.raw = data
 
@@ -64,9 +98,11 @@ class GameboyRomView(BinaryView):
         rom_sig = data.read(self.ROM_SIG_OFFSET, self.ROM_SIG_LEN)
         if rom_sig != self.ROM_SIG:
             return False
+
         hdr = data.read(self.HDR_OFFSET, self.HDR_SIZE)
         if len(hdr) < self.HDR_SIZE:
             return False
+
         return True
 
     def init(self):
@@ -87,34 +123,41 @@ class GameboyRomView(BinaryView):
         except:
             log_error(traceback.format_exc())
             return False
-            
+
         # Add ROM mappings
         # ROM0
-        self.add_auto_segment(self.ROM0_OFFSET, self.ROM0_SIZE, self.ROM0_OFFSET, self.ROM0_SIZE, SegmentFlag.SegmentReadable | SegmentFlag.SegmentExecutable)
-        self.add_auto_section("ROM0", self.ROM0_OFFSET, self.ROM0_SIZE, SectionSemantics.ReadOnlyCodeSectionSemantics)
+        self.add_auto_segment(self.ROM0_OFFSET, self.ROM0_SIZE, self.ROM0_OFFSET,
+                              self.ROM0_SIZE, SegmentFlag.SegmentReadable | SegmentFlag.SegmentExecutable)
+        self.add_auto_section("ROM0", self.ROM0_OFFSET, self.ROM0_SIZE,
+                              SectionSemantics.ReadOnlyCodeSectionSemantics)
         # ROM1
-        self.add_auto_segment(self.ROM1_OFFSET, self.ROM1_SIZE, self.ROM1_OFFSET, self.ROM1_SIZE, SegmentFlag.SegmentReadable | SegmentFlag.SegmentExecutable)
-        self.add_auto_section("ROM1", self.ROM1_OFFSET, self.ROM1_SIZE, SectionSemantics.ReadWriteDataSectionSemantics)
-        
+        self.add_auto_segment(self.ROM1_OFFSET, self.ROM1_SIZE, self.ROM1_OFFSET,
+                              self.ROM1_SIZE, SegmentFlag.SegmentReadable | SegmentFlag.SegmentExecutable)
+        self.add_auto_section("ROM1", self.ROM1_OFFSET, self.ROM1_SIZE,
+                              SectionSemantics.ReadWriteDataSectionSemantics)
+
         # Add RAM mappings
         for _, address, length in self.RAM_SEGMENTS:
-            self.add_auto_segment(address, length, 0, 0, SegmentFlag.SegmentReadable | SegmentFlag.SegmentWritable | SegmentFlag.SegmentExecutable)
+            self.add_auto_segment(address, length, 0, 0, SegmentFlag.SegmentReadable |
+                                  SegmentFlag.SegmentWritable | SegmentFlag.SegmentExecutable)
 
         # Add IO registers
         for address, name in LR35902.IO_REGISTERS.items():
-            self.define_auto_symbol_and_var_or_function(Symbol(SymbolType.DataSymbol, address, name), Type.int(1))
+            self.define_auto_symbol_and_var_or_function(
+                Symbol(SymbolType.DataSymbol, address, name), Type.int(1))
 
         # Define entrypoint
-        self.define_auto_symbol(Symbol(SymbolType.FunctionSymbol, self.START_ADDR, "_start"))
+        self.define_auto_symbol(
+            Symbol(SymbolType.FunctionSymbol, self.START_ADDR, "_start"))
         self.add_entry_point(self.START_ADDR)
 
         # Define interrupts
         for name, address in self.INTERRUPT_HANDLERS:
-            self.define_auto_symbol(Symbol(SymbolType.FunctionSymbol, address, name))
+            self.define_auto_symbol(
+                Symbol(SymbolType.FunctionSymbol, address, name))
             #self.define_auto_symbol_and_var_or_function(Symbol(SymbolType.FunctionSymbol, address, name), Type.function(Type.void(), []))
 
         return True
-
 
     def perform_is_valid_offset(self, addr):
         # valid ROM addresses are the upper-half of the address space
@@ -133,3 +176,24 @@ class GameboyRomView(BinaryView):
 
     def perform_get_entry_point(self):
         return self.START_ADDR
+
+
+#NUM_BANKS = 0x200
+NUM_BANKS = 1
+
+banks = []
+
+
+def register_views():
+    for bank_number in range(NUM_BANKS):
+
+        class GameboyRomViewBank(GameboyRomView):
+            bank = bank_number
+            name = f"Gameboy Bank {bank_number:X}"
+            long_name = f"Gameboy ROM (bank {bank_number:X})"
+
+            def __init__(self, data):
+                GameboyRomView.__init__(self, data)
+
+        banks.append(GameboyRomViewBank)
+        GameboyRomViewBank.register()

@@ -1,0 +1,14 @@
+# CHANGELOG
+
+## v1.0
+
+* First version
+* Added proper IO register symbols
+* Added ISR symbols
+* Fixed some incorrect branching
+* Fixed some incorrect addressing modes
+
+## Unreleased
+
+* Improved RST handling
+* Correctly handle HMEM loads

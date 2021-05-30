@@ -1,4 +1,4 @@
 from .gameboy import LR35902
-from .gameboyview import GameboyRomView
+from .gameboyview import register_views
 LR35902.register()
-GameboyRomView.register()
+register_views()

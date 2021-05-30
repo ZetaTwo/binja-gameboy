@@ -124,6 +124,13 @@ class LR35902(Architecture):
         with open(os.path.join(basepath, 'opcodes.json')) as fin:
             self.opcodes = json.load(fin)
 
+
+    def _get_io_register(self, addr):
+        if addr in range(0xFF80, 0xFFFF):
+            return f'HRAM_{addr-0xFF80:02X}'
+        else:
+            return self.IO_REGISTERS[addr]
+
     def _decode_instruction(self, data: bytes, addr: int):
         if len(data) == 0:
             return self.INVALID_INS
@@ -157,7 +164,7 @@ class LR35902(Architecture):
             return [InstructionTextToken(InstructionTextTokenType.TextToken, '0')]
         if mnemonic == 'RST':
             value = bytes.fromhex(operand[:2])[0]
-            return [InstructionTextToken(InstructionTextTokenType.DataSymbolToken, "sub_%x" % value, value)]
+            return [InstructionTextToken(InstructionTextTokenType.AddressDisplayToken, f"irs_usr{value//8}", value)]
 
         result = []
         depth = 0
@@ -176,10 +183,10 @@ class LR35902(Architecture):
                 value = struct.unpack('<B', data[1:2])[0]
                 try:
                     result.append(InstructionTextToken(
-                        InstructionTextTokenType.DataSymbolToken, self.IO_REGISTERS[0xFF00+value], 0xFF00+value))
+                        InstructionTextTokenType.DataSymbolToken, self._get_io_register(0xFF00+value), 0xFF00+value))
                 except:
                     raise ValueError(
-                        f'Invalid IO register offset {value} in {atoms}')
+                        f'Invalid IO register offset {value} in {mnemonic} {atoms}')
             elif atom == 'a16':
                 value = struct.unpack('<H', data[1:3])[0]
                 result.append(InstructionTextToken(

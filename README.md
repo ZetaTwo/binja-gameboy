@@ -6,6 +6,8 @@ A Binary Ninja plugin to load Game Boy ROMs and disassemble Game Boy architectur
 
 Based on [bnGB](https://github.com/icecr4ck/bnGB) by [Hugo Porcher (icecr4ck)](https://github.com/icecr4ck).
 
+For a list of changes, read the [changelog](CHANGELOG).
+
 ### Improvements
 * Added proper IO register symbols
 * Added ISR symbols
@@ -14,6 +16,7 @@ Based on [bnGB](https://github.com/icecr4ck/bnGB) by [Hugo Porcher (icecr4ck)](h
 
 ### Todo
 * Implement LLIL lifting
+* Fix sub_d (stop disas from 0)
 * Thorough testing
 
 ## Installation
@@ -24,13 +27,17 @@ Either install the plugin from the plugin manager or manually clone the reposito
 
 This plugin has only been tested on the following version of Binary Ninja:
 
-* release - 2.2.2487
+* release - 2.3.2660
 
 ## References
 
 * [Gameboy Project](https://github.com/ZetaTwo/gameboy-project)
 * [Gameboy Pan Docs](http://bgb.bircd.org/pandocs.htm)
 * [Gameboy opcodes](https://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html)  
+
+## Testing
+
+* [GBDK-2020](https://github.com/gbdk-2020/gbdk-2020)
 
 ## License
 
