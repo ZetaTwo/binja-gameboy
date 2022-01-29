@@ -270,7 +270,7 @@ class LR35902(Architecture):
                               struct.unpack("<H", data[1:3])[0])
         return result
 
-    def perform_get_instruction_text(self, data, addr):
+    def get_instruction_text(self, data, addr):
         ins_mnem, ins_len, operands, _, _ = self._decode_instruction(
             data, addr)
         if ins_mnem is None:
