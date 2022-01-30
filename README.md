@@ -25,9 +25,10 @@ Either install the plugin from the plugin manager or manually clone the reposito
 
 ## Minimum version
 
-This plugin has only been tested on the following version of Binary Ninja:
+This plugin has been tested on the following versions of Binary Ninja:
 
-* release - 2.3.2660
+* release - 3.0.3233
+* dev - 3.0.3238-dev
 
 ## References
 
