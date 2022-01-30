@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v1.1
+
+* Fixed bug caused by improper naming of `get_instruction_text`
+* Added Waveform memory registers
+* Tested on latest version of Binary Ninja
+
 ## v1.0
 
 * First version
