@@ -89,6 +89,24 @@ class LR35902(Architecture):
         0xFF24: "NR50",
         0xFF25: "NR51",
         0xFF26: "NR52",
+
+        0xFF30: "WAV0",
+        0xFF31: "WAV1",
+        0xFF32: "WAV2",
+        0xFF33: "WAV3",
+        0xFF34: "WAV4",
+        0xFF35: "WAV5",
+        0xFF36: "WAV6",
+        0xFF37: "WAV7",
+        0xFF38: "WAV8",
+        0xFF39: "WAV9",
+        0xFF3A: "WAVA",
+        0xFF3B: "WAVB",
+        0xFF3C: "WAVC",
+        0xFF3D: "WAVD",
+        0xFF3E: "WAVE",
+        0xFF3F: "WAVF",
+
         0xFF40: "LCDC",
         0xFF41: "STAT",
         0xFF42: "SCY",
@@ -186,7 +204,7 @@ class LR35902(Architecture):
                         InstructionTextTokenType.DataSymbolToken, self._get_io_register(0xFF00+value), 0xFF00+value))
                 except:
                     raise ValueError(
-                        f'Invalid IO register offset {value} in {mnemonic} {atoms}')
+                        f'Invalid IO register offset {value} in {mnemonic} {atoms} at addr {addr:#0x}')
             elif atom == 'a16':
                 value = struct.unpack('<H', data[1:3])[0]
                 result.append(InstructionTextToken(
